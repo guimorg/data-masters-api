@@ -1,0 +1,7 @@
+aiohttp
+fastjsonschema
+pandas
+nltk
+tensorflow
+keras
+boto3

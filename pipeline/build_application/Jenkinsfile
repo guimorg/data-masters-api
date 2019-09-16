@@ -1,0 +1,71 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Git Checkout..'
+                git credentialsId: '4f2dcb16-6345-4ea8-bcf4-1ed461d3d116', url: "https://github.com/guimorg/machine-learning-api.git"
+            }
+        }
+        
+        stage('Install Dependencies'){
+            steps{
+                echo 'Installing dependencies...'
+                sh "python3 -m virtualenv .testing-venv"
+                sh "make install-dev"
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                sh "make test"
+            }
+        }
+        
+        stage('Report') {
+            steps {
+                echo 'Generatinr Report...'
+                sh "make cover"
+            }
+        }
+        
+        stage('Lint') {
+            steps {
+                echo 'Linting..'
+                sh "make lint"
+            }
+        }
+        
+        stage('Cleanup') {
+            steps {
+                echo 'Cleaning...'
+                sh "make clean"
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                echo 'Building..'
+                script{
+                    docker.build("784406232881.dkr.ecr.us-east-2.amazonaws.com/data-masters:latest")
+                }
+            }
+        }
+        
+        
+        stage('Publish') {
+            steps {
+                echo 'Publishing....'
+                script{
+                    withDockerRegistry(credentialsId: 'ecr-credentials', url: 'https://784406232881.dkr.ecr.us-east-2.amazonaws.com'){
+                        docker.image("784406232881.dkr.ecr.us-east-2.amazonaws.com/data-masters:latest")
+                    }
+                }
+                
+            }
+        }
+        
+    }
+}

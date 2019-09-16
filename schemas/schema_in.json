@@ -1,0 +1,21 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Input Schema for Twitter Sentiment Prediction",
+  "required": [
+    "text"
+  ],
+  "properties": {
+    "text": {
+      "$id": "#/properties/text",
+      "type": "string",
+      "title": "The Text Schema",
+      "default": "",
+      "examples": [
+        "Hello World!"
+      ],
+      "pattern": "^(.*)$"
+    }
+  }
+}

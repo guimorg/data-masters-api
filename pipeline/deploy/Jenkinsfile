@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Git Checkout..'
+                git credentialsId: '4f2dcb16-6345-4ea8-bcf4-1ed461d3d116', url: "https://github.com/guimorg/machine-learning-api.git"
+            }
+        }
+        
+        stage('Lint') {
+            steps {
+                echo 'Linting..'
+                dir("chart"){
+                    sh "helm lint"
+                }
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                echo 'Building..'
+                dir("chart"){
+                    sh "helm package ."
+                }
+            }
+        }
+        
+        
+        stage('Publish') {
+            steps {
+                echo 'Publishing....'
+                script{
+                    s3Upload(file:"chart/chart-0.1.0.tgz", bucket:"data-masters")
+                }
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+                dir("chart"){
+                    sh """
+                    helm install -f values.yaml .
+                    """
+                }
+            }
+        }
+    }
+}

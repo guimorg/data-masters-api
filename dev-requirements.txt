@@ -1,0 +1,6 @@
+pytest
+pytest-cov
+pytest-aiohttp
+pytest-asyncio
+flake8
+pylint

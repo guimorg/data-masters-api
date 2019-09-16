@@ -1,0 +1,28 @@
+# Configuring our chart
+
+replicaCount: 1
+
+image:
+  repository: imageNameWithRepository 
+  tag: latest
+  pullPolicy: Always
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths: []
+  
+  tls: []
+
+aws_access_key_id: SOME_KEY 
+aws_secret_access_key: SOME_OTHER_KEY 
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
